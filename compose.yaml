@@ -1,0 +1,17 @@
+name: squid_frontend
+services:
+  squid_frontent:
+    container_name: squid_frontend
+    image: ${IMAGE}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      tags:
+        - ${IMAGE}:latest
+        - ${IMAGE}:${PROJECT_VERSION}
+        - ${IMAGE}:dev
+    
+    privileged: true
+    env_file: .env
+    ports:
+      - 8080:8080
