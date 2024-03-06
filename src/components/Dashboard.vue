@@ -21,7 +21,8 @@
     <v-main>
     <div v-if=!has_url>
       <v-text-field id="url" default="Test"></v-text-field>
-      <v-btn @click="submit_url()"></v-btn>
+      <v-btn @click="submit_url()">submit url</v-btn>
+      <v-btn @click="submit_default_url()">run locally</v-btn>
     </div>
     <div v-if=has_url>
     <div class="d-inline-flex">
@@ -110,11 +111,12 @@
   const url = ref()
   const has_url = ref(false)
   const start = () => {
-  watchEffect(async () => wc_state.value = await (await fetch('http://localhost:8000/wc/state')).json())
-  setInterval(async () => wc_state.value = await (await fetch('http://localhost:8000/wc/state')).json(), 500)
+  watchEffect(async () => wc_state.value = await (await fetch(url.value)).json())
+  setInterval(async () => wc_state.value = await (await fetch(url.value)).json(), 500)
   setInterval(async () => wfs.value = Object.keys(wc_state.value.workflows).sort().reverse(), 500)
   }
   const submit_url = () => {url.value = document.getElementById('url'); has_url.value = true; start()}
+  const submit_default_url = () => {url.value = "http://localhost:8000/wc/state"; has_url.value = true; start()}
   const wc_state = ref()
   const wfs = ref()
   wc_state.value={modules: {"test": {state: "test"}}}
@@ -158,9 +160,9 @@
     border-radius: 5px;
     margin-left: 10px;
   }
-  .new {
+  .queued {
     
-    background-color: blue;
+    background-color: yellow;
     
    
   }
