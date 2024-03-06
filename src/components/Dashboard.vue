@@ -19,26 +19,39 @@
     </v-app-bar>
 
     <v-main>
-  
-      <v-list>
-        <h3>Modules:</h3>
+    <div v-if=!has_url>
+      <v-text-field id="url" default="Test"></v-text-field>
+      <v-btn @click="submit_url()"></v-btn>
+    </div>
+    <div v-if=has_url>
+    <div class="d-inline-flex">
+      <div class="d-flex-column">
+      <h3 >Modules:</h3>
+      <v-list class="d-flex-column">
         <v-list-item
         v-for="(value, key) in wc_state.modules"
         :key="key"
         :title="key"
-    
-  ><p class=module_indicator :class="value.state">{{ value.state}}</p></v-list-item>
+    ><p class=module_indicator :class="value.state">{{ value.state}}</p></v-list-item>
       </v-list>
-        <v-list title="Locations">
-          <h3>Locations:</h3>
+    </div>
+    </div>
+    <div class="d-inline-flex">
+      <div class="d-flex-column">
+      <h3>Locations:</h3>
+        <v-list title="Locations" >
+         
         <v-list-item
         v-for="(value, key) in wc_state.locations"
         :key="key"
         :title="key"
     :subtitle="value.state"
+    
   ></v-list-item>
         
       </v-list>
+    </div>
+      </div>
       
       <v-expansion-panels class="w-25" >
         
@@ -55,6 +68,7 @@
         id="wf"
         :subtitle="wc_state.workflows[key].name"
   >
+  
   <v-expansion-panel-title>
     {{ wc_state.workflows[key].name }} {{key}} <p class=wf_indicator :class="wc_state.workflows[key].status"></p>
   </v-expansion-panel-title>
@@ -86,18 +100,26 @@
     </v-expansion-panel>
   </v-expansion-panels>
       <!--  -->
+      </div>
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
   import { ref, watchEffect } from 'vue'
-  const wc_state = ref()
-  const wfs = ref()
-  wc_state.value={modules: {"test": {state: "test"}}}
+  const url = ref()
+  const has_url = ref(false)
+  const start = () => {
   watchEffect(async () => wc_state.value = await (await fetch('http://localhost:8000/wc/state')).json())
   setInterval(async () => wc_state.value = await (await fetch('http://localhost:8000/wc/state')).json(), 500)
   setInterval(async () => wfs.value = Object.keys(wc_state.value.workflows).sort().reverse(), 500)
+  }
+  const submit_url = () => {url.value = document.getElementById('url'); has_url.value = true; start()}
+  const wc_state = ref()
+  const wfs = ref()
+  wc_state.value={modules: {"test": {state: "test"}}}
+
+  
   
   const drawer = ref(false)
 </script>
