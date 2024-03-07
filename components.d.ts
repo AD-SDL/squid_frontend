@@ -8,5 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Dashboard: typeof import('./src/components/Dashboard.vue')['default']
+    WorkflowTable: typeof import('./src/components/WorkflowTable.vue')['default']
   }
 }
