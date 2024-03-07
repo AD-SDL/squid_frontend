@@ -50,7 +50,7 @@
     </v-expansion-panels>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, defineModel } from 'vue'
 const props = defineProps(['wfs', 'wc_state', 'title'])
 const modal = defineModel('modal')
