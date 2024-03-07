@@ -98,10 +98,9 @@
       <h3 >Modules:</h3>
       <v-list class="d-flex-column">
         <v-list-item
-        v-for="(value, key) in wc_state.modules"
-        :key="key"
-        @click="set_modal(key, value.about)"
-    ><v-list-item-title> <h4>{{key}}</h4></v-list-item-title>
+        v-for="(value, key2) in wc_state.modules"   
+        @click="set_modal(String(key2), value.about)"
+    ><v-list-item-title> <h4>{{key2}}</h4></v-list-item-title>
   
      
        <p class=module_indicator :class="value.state">{{ value.state}}</p></v-list-item>
@@ -200,8 +199,8 @@
   const tab = ref(null)
   const modal_text = ref()
   const active_wfs = ref()
-  const wfs = ref([])
-  const set_modal = (title, value) =>
+  const wfs = ref([''])
+  const set_modal = (title: string, value: Object) =>
     {
       modal_title.value = title
       modal_text.value = value

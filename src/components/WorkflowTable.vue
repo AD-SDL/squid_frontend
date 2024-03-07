@@ -56,7 +56,7 @@ const props = defineProps(['wfs', 'wc_state', 'title'])
 const modal = defineModel('modal')
 const modal_text = defineModel('modal_text')
 const modal_title = defineModel('modal_title')
-const set_modal = (title, value) =>
+const set_modal = (title: string, value: Object) =>
     {
       modal_title.value = title
       modal_text.value = value
