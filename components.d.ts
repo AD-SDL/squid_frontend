@@ -8,9 +8,11 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Dashboard: typeof import('./src/components/Dashboard.vue')['default']
+    Experiment: typeof import('./src/components/Experiment.vue')['default']
     LocationsColumn: typeof import('./src/components/LocationsColumn.vue')['default']
     ModuleColumn: typeof import('./src/components/ModuleColumn.vue')['default']
     ModuleModal: typeof import('./src/components/ModuleModal.vue')['default']
+    Workflow: typeof import('./src/components/Workflow.vue')['default']
     WorkflowModal: typeof import('./src/components/WorkflowModal.vue')['default']
     WorkflowTable: typeof import('./src/components/WorkflowTable.vue')['default']
   }

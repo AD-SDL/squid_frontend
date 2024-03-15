@@ -3,10 +3,10 @@
 
     <WorkflowModal :modal_title="modal_title ":modal_text="modal_text" v-model:modal="modal" />
 
-    <v-expansion-panels>
+    <v-expansion-panels v-model="panel">
 
 
-        <v-expansion-panel>
+        <v-expansion-panel >
             <v-expansion-panel-title>
                 <h3>{{ title }}</h3>
             </v-expansion-panel-title>
@@ -57,10 +57,19 @@
 <script setup lang="ts">
 import { ref, defineModel } from 'vue'
 import WorkflowModal from './WorkflowModal.vue'
-const props = defineProps(['wfs', 'wc_state', 'title'])
+const props = defineProps(['wfs', 'wc_state', 'title', 'start_open'])
 const modal = ref(false)
 const modal_text=ref()
 const modal_title = ref()
+const panel = ref()
+console.log(props.start_open)
+if(!props.start_open) {
+  panel.value = []
+}
+else {
+    panel.value = [0]
+}
+console.log(panel.value)
 const set_modal = (title: string, value: Object) =>
     {
       modal_title.value = title

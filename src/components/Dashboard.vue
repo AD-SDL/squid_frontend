@@ -14,7 +14,7 @@
 
 
       <div v-if=!has_url>
-        <v-text-field id="url" default="Test"></v-text-field>
+        <v-text-field id="url" default="Test" v-model="url_text"></v-text-field>
         <v-btn @click="submit_url()">submit url</v-btn>
         <v-btn @click="submit_default_url()">run locally</v-btn>
       </div>
@@ -40,11 +40,11 @@
               </v-col>
               <v-col>
                 <WorkflowTable title="Active Workflows" :wc_state=wc_state
-                  :wfs="wfs.filter(key => wc_state.workflows[key].status === 'running')" />
+                  :wfs="wfs.filter(key => wc_state.workflows[key].status === 'running')" start_open=true />
                 <WorkflowTable title="Queued Workflows" :wc_state=wc_state
                   :wfs="wfs.filter(key => wc_state.workflows[key].status === 'queued'
                    || wc_state.workflows[key].status === 'new')"
-                 />
+                 start_open=true />
                 <WorkflowTable title="Recent Completed Workflows" :wc_state=wc_state
                   :wfs="wfs.filter(key => wc_state.workflows[key].status === 'completed' 
                   || wc_state.workflows[key].status === 'failed').slice(0, 10)"
@@ -70,7 +70,7 @@
                     <WorkflowTable title="Workflows" :wc_state=wc_state :wfs="wfs" v-model:modal="modal"
                       v-model:modal_text="modal_text" v-model:modal_title="modal_title" />
 
-
+                    <p>{{ logs_test }}</p>
 
                   </v-expansion-panel-text>
                 </v-expansion-panel>
@@ -101,7 +101,8 @@ import { ref, watchEffect } from 'vue'
 import WorkflowTable from './WorkflowTable.vue'
 import ModuleColumn from './ModuleColumn.vue'
 import LocationsColumn from './LocationsColumn.vue';
-const url = ref()
+const main_url = ref()
+const state_url = ref()
 const has_url = ref(false)
 const modal = ref(false)
 const modal_title = ref()
@@ -111,6 +112,11 @@ const wfs = ref([''])
 const active_wfs = ref([''])
 const queued_wfs = ref([''])
 const completed_wfs = ref([''])
+const experiments = ref()
+const experiments_url = ref()
+const logs_test = ref()
+const input = ref()
+const url_text = ref()
 const set_modal = (title: string, value: Object) => {
   modal_title.value = title
   modal_text.value = value
@@ -118,14 +124,19 @@ const set_modal = (title: string, value: Object) => {
 }
 
 const start = () => {
-  watchEffect(async () => wc_state.value = await (await fetch(url.value)).json())
+  watchEffect(async () => wc_state.value = await (await fetch(state_url.value)).json())
   setInterval(async () => {
-    wc_state.value = await (await fetch(url.value)).json()
+    wc_state.value = await (await fetch(state_url.value)).json()
     wfs.value = Object.keys(wc_state.value.workflows).sort().reverse()
+    experiments.value = await ((await fetch(experiments_url.value)).json())
+    if(experiments.value["experiment_ids"].length > 0) {
+    logs_test.value = await ((await fetch(main_url.value.concat("/experiments/".concat(experiments.value["experiment_ids"][0]).concat("/log"))))).json()
+  }
+
   }, 500)
 }
-const submit_url = () => { url.value = document.getElementById('url'); has_url.value = true; start() }
-const submit_default_url = () => { url.value = "http://localhost:8000/wc/state"; has_url.value = true; start() }
+const submit_url = () => { console.log(main_url); main_url.value = url_text.value; has_url.value = true;  state_url.value=main_url.value.concat("/wc/state"); experiments_url.value=main_url.value.concat("/experiments/all"); start() }
+const submit_default_url = () => { main_url.value = "http://localhost:8000"; has_url.value = true; state_url.value=main_url.value.concat("/wc/state"); experiments_url.value=main_url.value.concat("/experiments/all"); start() }
 const wc_state = ref()
 wc_state.value = { modules: { "test": { state: "test" } } }
 
@@ -163,6 +174,13 @@ export default {
   width: 50px;
 
 }
+
+.UNKNOWN {
+  background-color: red;
+  width: 60px;
+
+}
+
 
 .wf_indicator {
   width: 10px;
