@@ -1,8 +1,7 @@
 <template>
-
-<v-list>
-    <WorkflowTable title="Workflows" :wc_state="wc_state" :wfs="my_wfs"/>
-
+ <WorkflowTable title="Workflows" :wc_state="wc_state" :wfs="my_wfs"/>
+<v-list height="300">
+   
                       <v-list-item v-for="thing in logs_test">
                           {{ thing }}
                         </v-list-item>
