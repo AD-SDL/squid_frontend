@@ -11,7 +11,7 @@
     ><v-list-item-title> <h4>{{key2}}</h4></v-list-item-title>
 
 
-       <p class=module_indicator :class="value.state">{{ value.state}}</p></v-list-item>
+       <button class=module_indicator :class="value.state">{{ value.state}}</button></v-list-item>
       </v-list>
 
     </div>

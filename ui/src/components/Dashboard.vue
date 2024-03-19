@@ -62,8 +62,11 @@
                     <h4> Started:</h4> 1/1/1111
                     <WorkflowTable title="Workflows" :wc_state=wc_state :wfs="wfs" v-model:modal="modal"
                       v-model:modal_text="modal_text" v-model:modal_title="modal_title" />
-
-                    <p>{{ logs_test }}</p>
+                    <v-list>
+                      <v-list-item v-for="thing in logs_test">
+                          {{ thing }}
+                        </v-list-item>
+                    </v-list>
 
                   </v-expansion-panel-text>
                 </v-expansion-panel>
@@ -168,7 +171,6 @@ export default {
 
   border-radius: 5px;
   padding: 3px;
-  width: 40px;
 }
 
 .IDLE {
@@ -178,19 +180,26 @@ export default {
 
 .BUSY {
   background-color: blue;
-  width: 45px;
+  
 
 }
 
 .ERROR {
   background-color: red;
-  width: 50px;
+ 
 
 }
 
 .UNKNOWN {
-  background-color: red;
-  width: 60px;
+  background-color: darkgrey;
+ 
+
+}
+
+
+.INIT {
+  background-color: purple;
+ 
 
 }
 
