@@ -1,5 +1,4 @@
 <template>
-
   <v-app id="inspire">
 
 
@@ -12,13 +11,7 @@
     <v-main>
 
 
-
-      <div v-if=!has_url>
-        <v-text-field id="url" default="Test" v-model="url_text"></v-text-field>
-        <v-btn @click="submit_url()">submit url</v-btn>
-        <v-btn @click="submit_default_url()">run locally</v-btn>
-      </div>
-      <div v-if=has_url>
+     
         <v-tabs v-model="tab" align-tabs="center" color="deep-purple-accent-4">
           <v-tab :value="1">Workcell</v-tab>
           <v-tab :value="2">Workflows</v-tab>
@@ -90,7 +83,7 @@
 
         </v-window>
         <!--  -->
-      </div>
+     
 
     </v-main>
   </v-app>
@@ -117,30 +110,50 @@ const experiments_url = ref()
 const logs_test = ref()
 const input = ref()
 const url_text = ref()
+const backend_server = ref()
+const workcell_urls = ref()
+const wc_state = ref()
 const set_modal = (title: string, value: Object) => {
   modal_title.value = title
   modal_text.value = value
   modal.value = true
 }
+backend_server.value = "http://".concat(window.location.host).concat("/server")
+console.log(backend_server)
+// workcell_urls.value = await (await fetch(backend_server.value)).json()
+console.log(workcell_urls.value)
+watchEffect(async () => {workcell_urls.value = await (await fetch(backend_server.value)).json();
+main_url.value = workcell_urls.value[0]
+console.log(workcell_urls.value)
+// main_url.value = workcell_urls.value[0]
+ 
+has_url.value = true;  
+// main_url.value = "http://localhost:8000"
+state_url.value=main_url.value.concat("/wc/state")
 
-const start = () => {
-  watchEffect(async () => wc_state.value = await (await fetch(state_url.value)).json())
-  setInterval(async () => {
-    wc_state.value = await (await fetch(state_url.value)).json()
-    wfs.value = Object.keys(wc_state.value.workflows).sort().reverse()
-    experiments.value = await ((await fetch(experiments_url.value)).json())
-    if(experiments.value["experiment_ids"].length > 0) {
-    logs_test.value = await ((await fetch(main_url.value.concat("/experiments/".concat(experiments.value["experiment_ids"][0]).concat("/log"))))).json()
-  }
+experiments_url.value=main_url.value.concat("/experiments/all")
 
-  }, 500)
-}
-const submit_url = () => { console.log(main_url); main_url.value = url_text.value; has_url.value = true;  state_url.value=main_url.value.concat("/wc/state"); experiments_url.value=main_url.value.concat("/experiments/all"); start() }
-const submit_default_url = () => { main_url.value = "http://localhost:8000"; has_url.value = true; state_url.value=main_url.value.concat("/wc/state"); experiments_url.value=main_url.value.concat("/experiments/all"); start() }
-const wc_state = ref()
+
+watchEffect(async () => wc_state.value = await (await fetch(state_url.value)).json())
+
+
 wc_state.value = { modules: { "test": { state: "test" } } }
 
+
 const drawer = ref(false)
+setInterval(async () => {
+  wc_state.value = await (await fetch(state_url.value)).json()
+  wfs.value = Object.keys(wc_state.value.workflows).sort().reverse()
+  experiments.value = await ((await fetch(experiments_url.value)).json())
+  console.log(wc_state)
+  if(experiments.value["experiment_ids"].length > 0) {
+  logs_test.value = await ((await fetch(main_url.value.concat("/experiments/".concat(experiments.value["experiment_ids"][0]).concat("/log"))))).json()
+}
+
+}, 500)
+}
+)
+
 </script>
 
 <script lang="ts">
