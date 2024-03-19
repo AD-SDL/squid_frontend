@@ -8,9 +8,8 @@ services:
       dockerfile: Dockerfile
       tags:
         - ${IMAGE}:latest
-        - ${IMAGE}:${PROJECT_VERSION}
         - ${IMAGE}:dev
-    
+
     privileged: true
     env_file: .env
     ports:

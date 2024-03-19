@@ -6,14 +6,14 @@
       <h3 >Modules:</h3>
       <v-list class="d-flex-column">
         <v-list-item
-        v-for="(value, key2) in modules"   
+        v-for="(value, key2) in modules"
         @click="set_modal(String(key2), value.about)"
     ><v-list-item-title> <h4>{{key2}}</h4></v-list-item-title>
-  
-     
+
+
        <p class=module_indicator :class="value.state">{{ value.state}}</p></v-list-item>
       </v-list>
-   
+
     </div>
 </template>
 

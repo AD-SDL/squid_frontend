@@ -4,7 +4,7 @@
     <v-card>
       <v-card-text>
         <h2 class="title">{{ modal_title }}</h2>
-        
+
         <v-list>
           <v-list-item><b>Run ID:</b> {{ modal_text.run_id }}<br></v-list-item>
           <v-list-item v-if="modal_text.start_time">
@@ -18,22 +18,22 @@
           </v-list-item>
         </v-list>
         <div>
-         <v-switch label="Toggle Payload Values" v-model="flowdef"></v-switch> 
+         <v-switch label="Toggle Payload Values" v-model="flowdef"></v-switch>
         <div v-if="flowdef" >
-         <Workflow :steps="modal_text.flowdef" /> 
+         <Workflow :steps="modal_text.flowdef" />
          </div>
          <div v-else>
-          <Workflow :steps="modal_text.steps"/> 
+          <Workflow :steps="modal_text.steps"/>
          </div>
         </div>
-         
+
 
 
       </v-card-text>
       <v-card-row actions>
         <v-spacer></v-spacer>
         <v-btn flat v-on:click.native="modal = false" class="primary--text">close</v-btn>
-        
+
       </v-card-row>
     </v-card>
   </v-dialog>
@@ -46,5 +46,5 @@
     const props = defineProps(['modal_title', 'modal_text'])
     const modal= defineModel('modal', {type: Boolean})
     const flowdef = ref(false)
-    
+
     </script>

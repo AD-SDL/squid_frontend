@@ -11,7 +11,7 @@
     <v-main>
 
 
-     
+
         <v-tabs v-model="tab" align-tabs="center" color="deep-purple-accent-4">
           <v-tab :value="1">Workcell</v-tab>
           <v-tab :value="2">Workflows</v-tab>
@@ -39,7 +39,7 @@
                    || wc_state.workflows[key].status === 'new')"
                  start_open=true />
                 <WorkflowTable title="Recent Completed Workflows" :wc_state=wc_state
-                  :wfs="wfs.filter(key => wc_state.workflows[key].status === 'completed' 
+                  :wfs="wfs.filter(key => wc_state.workflows[key].status === 'completed'
                   || wc_state.workflows[key].status === 'failed').slice(0, 10)"
                  />
 
@@ -83,7 +83,7 @@
 
         </v-window>
         <!--  -->
-     
+
 
     </v-main>
   </v-app>
@@ -126,8 +126,8 @@ watchEffect(async () => {workcell_urls.value = await (await fetch(backend_server
 main_url.value = workcell_urls.value[0]
 console.log(workcell_urls.value)
 // main_url.value = workcell_urls.value[0]
- 
-has_url.value = true;  
+
+has_url.value = true;
 // main_url.value = "http://localhost:8000"
 state_url.value=main_url.value.concat("/wc/state")
 
