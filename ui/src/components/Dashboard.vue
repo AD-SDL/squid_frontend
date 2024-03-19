@@ -16,9 +16,9 @@
           <v-tab :value="1">Workcell</v-tab>
           <v-tab :value="2">Workflows</v-tab>
           <v-tab :value="3">Experiments</v-tab>
-          <v-tab :value="4">Events</v-tab>
+          <!-- <v-tab :value="4">Events</v-tab>
           <v-tab :value="5">Admin</v-tab>
-          <v-tab :value="6">Resources</v-tab>
+          <v-tab :value="6">Resources</v-tab> -->
 
         </v-tabs>
         <v-window v-model="tab">
@@ -47,34 +47,26 @@
             </v-row>
           </v-window-item>
           <v-window-item :key="2" :value="2">
-            <p>test2</p>
+            <WorkflowTable title="All Workflows" :wc_state=wc_state
+                  :wfs="wfs" start_open=true />
           </v-window-item>
           <v-window-item :key="3" :value="3">
             <v-layout class='justify-center'>
               <v-expansion-panels class="w-50">
-                <v-expansion-panel>
+                <v-expansion-panel v-for="(key) in experiment_keys">
                   <v-expansion-panel-title>
-                    <h3>Color_Picker_ASDFSFDJDLGKjLDKJLKJ</h3>
+                    <h3>{{ experiments[key] }} ID: {{ key }}</h3>
                   </v-expansion-panel-title>
                   <v-expansion-panel-text>
-                    <h4>Project:</h4> Color_Picker
-                    <h4> Creator:</h4> No b. Ody
-                    <h4> Started:</h4> 1/1/1111
-                    <WorkflowTable title="Workflows" :wc_state=wc_state :wfs="wfs" v-model:modal="modal"
-                      v-model:modal_text="modal_text" v-model:modal_title="modal_title" />
-                    <v-list>
-                      <v-list-item v-for="thing in logs_test">
-                          {{ thing }}
-                        </v-list-item>
-                    </v-list>
-
+                    <Experiment :main_url="main_url" :experiment_id="key" :wc_state="wc_state" :wfs="wfs"/>
+                    
                   </v-expansion-panel-text>
                 </v-expansion-panel>
               </v-expansion-panels>
             </v-layout>
 
           </v-window-item>
-          <v-window-item :key="4" :value="4">
+          <!-- <v-window-item :key="4" :value="4">
             <p>test3</p>
           </v-window-item>
           <v-window-item :key="5" :value="5">
@@ -82,7 +74,7 @@
           </v-window-item>
           <v-window-item :key="6" :value="6">
             <p>test3</p>
-          </v-window-item>
+          </v-window-item> -->
 
         </v-window>
         <!--  -->
@@ -97,6 +89,7 @@ import { ref, watchEffect } from 'vue'
 import WorkflowTable from './WorkflowTable.vue'
 import ModuleColumn from './ModuleColumn.vue'
 import LocationsColumn from './LocationsColumn.vue';
+import Experiment from './Experiment.vue';
 const main_url = ref()
 const state_url = ref()
 const has_url = ref(false)
@@ -116,6 +109,7 @@ const url_text = ref()
 const backend_server = ref()
 const workcell_urls = ref()
 const wc_state = ref()
+const experiment_keys = ref()
 const set_modal = (title: string, value: Object) => {
   modal_title.value = title
   modal_text.value = value
@@ -144,14 +138,29 @@ wc_state.value = { modules: { "test": { state: "test" } } }
 
 
 const drawer = ref(false)
+function sortOnKeys(dict: any) {
+
+var sorted = [];
+for(var key in dict) {
+    sorted[sorted.length] = key;
+}
+sorted.sort();
+
+var tempDict: any = {};
+for(var i = 0; i < sorted.length; i++) {
+    tempDict[sorted[i]] = dict[sorted[i]];
+}
+
+return tempDict;
+}
 setInterval(async () => {
   wc_state.value = await (await fetch(state_url.value)).json()
   wfs.value = Object.keys(wc_state.value.workflows).sort().reverse()
   experiments.value = await ((await fetch(experiments_url.value)).json())
+  experiment_keys.value = Object.keys(experiments.value).sort().reverse()
+
   console.log(wc_state)
-  if(experiments.value["experiment_ids"].length > 0) {
-  logs_test.value = await ((await fetch(main_url.value.concat("/experiments/".concat(experiments.value["experiment_ids"][0]).concat("/log"))))).json()
-}
+  
 
 }, 500)
 }
